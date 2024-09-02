@@ -16,7 +16,7 @@ const MostVotes = ({anecdotes, points}) => {
   let topPoints = 0
   let topAnecdote = 0
 
-    //attribute with th highest votes is set to topPoints
+    //attribute with th highest votes is set to topPointsP
     // votes is 
 
   for (const p in points){
@@ -25,6 +25,7 @@ const MostVotes = ({anecdotes, points}) => {
       topPoints = points[p]
       topAnecdote = p 
       console.log('most votes', {topPoints})
+      
     }
 
   }
