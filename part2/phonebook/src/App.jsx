@@ -59,7 +59,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
 
-  const hook = () => {
+  useEffect(() => {
     console.log('effect')
     axios
       .get('http://localhost:3001/persons')
@@ -67,9 +67,7 @@ const App = () => {
         console.log('promise fulfilled')
         setPersons(response.data)
       })
-  }
-
-  useEffect(hook, [])
+  }, [])
   
   const handleSearchChange = (event) => {
     setNewSearch(event.target.value)
@@ -89,9 +87,9 @@ const App = () => {
     event.preventDefault()
 
     const personObject = {
-      id: persons.length + 1,
       name: newName,
-      number: newNumber
+      number: newNumber,
+      id: (persons.length + 1)
 
     }
 
@@ -115,6 +113,13 @@ const App = () => {
       setPersons(persons.concat(personObject))
       setNewName('')
       setNewNumber('')
+
+      axios
+      .post('http://localhost:3001/persons', personObject)
+      .then(response => {
+        console.log(response)
+      })
+
     }
 
   }
