@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import noteService from './services/persons'
 
 
 
@@ -46,10 +47,10 @@ const PersonForm = ({ addNewPerson, newName, handlePersonChange, newNumber, hand
 const Persons = ({ persons, newSearch }) => {
   return (
     persons.filter(person => person.name.toLowerCase()
-    .includes(newSearch.toLowerCase()))
-    .map(person =>
-      <p key={person.name}> {person.name} {person.number}</p>
-    )
+      .includes(newSearch.toLowerCase()))
+      .map(person =>
+        <p key={person.name}> {person.name} {person.number}</p>
+      )
   )
 }
 
@@ -60,15 +61,13 @@ const App = () => {
   const [newSearch, setNewSearch] = useState('')
 
   useEffect(() => {
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
+    noteService
+      .getAll()
+      .then(initialNumbers => {
+        setPersons(initialNumbers)
       })
   }, [])
-  
+
   const handleSearchChange = (event) => {
     setNewSearch(event.target.value)
   }
@@ -110,15 +109,15 @@ const App = () => {
     }
 
     else {
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
 
-      axios
-      .post('http://localhost:3001/persons', personObject)
-      .then(response => {
-        console.log(response)
-      })
+      noteService
+        .create(personObject)
+        .then(returnedNumber => {
+          setPersons(persons.concat(returnedNumber))
+          console.log("post request complete")
+          setNewName('')
+          setNewNumber('')
+        })
 
     }
 
