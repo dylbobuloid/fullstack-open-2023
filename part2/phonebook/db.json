@@ -1,44 +1,29 @@
 {
   "persons": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Arto Hellas",
       "number": "0700"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "John Pork",
       "number": "0400"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Monquavious Tangerine",
       "number": "079ooahah"
     },
     {
-      "id": 4,
-      "name": "Freakbob",
-      "number": "8008-135"
-    },
-    {
-      "id": 5,
+      "id": "4",
       "name": "Monquavious Coconut",
       "number": "0001"
     },
     {
-      "id": 6,
-      "name": "den",
-      "number": "2155"
-    },
-    {
-      "id": 7,
-      "name": "dyl",
-      "number": "079"
-    },
-    {
-      "id": 8,
-      "name": "jas",
-      "number": "515"
+      "id": "5",
+      "name": "denden",
+      "number": "51251261"
     }
   ]
 }

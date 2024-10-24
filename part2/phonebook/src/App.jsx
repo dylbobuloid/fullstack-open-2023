@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import noteService from './services/persons'
+import Name from './components/name'
 
 
 
@@ -44,15 +45,7 @@ const PersonForm = ({ addNewPerson, newName, handlePersonChange, newNumber, hand
 
 }
 
-const Persons = ({ persons, newSearch }) => {
-  return (
-    persons.filter(person => person.name.toLowerCase()
-      .includes(newSearch.toLowerCase()))
-      .map(person =>
-        <p key={person.name}> {person.name} {person.number}</p>
-      )
-  )
-}
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -88,7 +81,7 @@ const App = () => {
     const personObject = {
       name: newName,
       number: newNumber,
-      id: (persons.length + 1)
+      id: String(persons.length + 1)
 
     }
 
@@ -113,14 +106,49 @@ const App = () => {
       noteService
         .create(personObject)
         .then(returnedNumber => {
+          console.log("returned number",returnedNumber)
           setPersons(persons.concat(returnedNumber))
           console.log("post request complete")
           setNewName('')
           setNewNumber('')
         })
 
-    }
+        .catch(error => {
+          alert(
+            `the number '${person}' was doesn't exist`
+          )
+        })
 
+    }
+  }
+
+  const removeNumber = id => {
+
+    const nameToRemove = persons.find(p => p.id === id)
+    console.log(nameToRemove.name)
+  
+    if (window.confirm(`Delete ${nameToRemove.name}?`)) {
+      noteService
+      .remove(id)
+      .then(removedPerson => {
+        console.log("Number deleted ",removedPerson )
+        setPersons(persons.filter(person=>person.id !== id))
+      })
+      .catch(error=>{
+        console.log("Person cannot be found")
+      })
+    }
+  }
+
+  const Persons = ({ persons, newSearch }) => {
+    return (
+      
+      persons.filter(person => person.name.toLowerCase()
+        .includes(newSearch.toLowerCase()))
+        .map(person =>
+          <Name key= {person.id} person ={person} removeNumber={removeNumber} />
+        )
+    )
   }
 
   return (
@@ -136,11 +164,23 @@ const App = () => {
 
       <h3>Add a new </h3>
 
-      <PersonForm addNewPerson={addNewPerson} newName={newName} handlePersonChange={handlePersonChange}
-        newNumber={newNumber} handleNameChange={handleNameChange} />
+      <PersonForm 
+      addNewPerson={addNewPerson} 
+      newName={newName} 
+      handlePersonChange={handlePersonChange}
+      newNumber={newNumber} 
+      handleNameChange={handleNameChange} 
+      />
 
       <h2>Numbers</h2>
       <Persons persons={persons} newSearch={newSearch} />
+      {/* For every person it needs to render a button
+       using this         removeNumber={() => removeNumberOf(person.id)} 
+      // <button onClick={removeNumber}>{label}</button>
+      Create a new componenet that renders each line of a person
+      Each line of the person renders a button with remove number on it */}
+
+
 
     </div>
   )

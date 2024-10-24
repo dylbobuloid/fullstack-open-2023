@@ -12,6 +12,7 @@ const getAll = () => {
   }
   
   const remove = (id) =>{
+    console.log("id number",id)
     const request = axios.delete(`${baseUrl}/${id}`)
     return request.then(response => response.data)
 
