@@ -1,50 +1,9 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import Filter from "./components/filter";
 import noteService from './services/persons'
 import Name from './components/name'
-
-
-
-const Filter = ({ newSearch, handleSearchChange }) => {
-
-  return (
-    <div>
-      filter shown with<input value={newSearch}
-        onChange={handleSearchChange}>
-      </input>
-    </div>
-  )
-
-}
-
-const PersonForm = ({ addNewPerson, newName, handlePersonChange, newNumber, handleNameChange }) => {
-
-  return (
-
-    <form onSubmit={addNewPerson}>
-      <div>
-        name: <input
-          value={newName}
-          onChange={handlePersonChange}
-        />
-      </div>
-
-      <div>
-        number: <input
-          value={newNumber}
-          onChange={handleNameChange}
-        />
-      </div>
-
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-
-  )
-
-}
-
+import PersonForm from './components/PersonForm';
 
 
 const App = () => {
@@ -79,34 +38,74 @@ const App = () => {
     event.preventDefault()
 
     const personObject = {
+      id: String(persons.length + 1),
       name: newName,
-      number: newNumber,
-      id: String(persons.length + 1)
-
+      number: newNumber
     }
 
-    console.log(persons)
-    console.log("This is the new name", newName)
-    console.log("This is the new Person Object", personObject)
-
-
     const nameExists = persons.some(person => person.name === newName)
+    const numberExists = persons.some(person => person.number === newNumber)
+    //find the object with the matching number
+
+
 
     console.log("The name exists in the phonebook", nameExists)
 
+    // if (nameExists) {
+    //   window.alert(`${newName} is already added to phonebook`)
+    //   setNewName('')
+    //   setNewNumber('')
+    //   return
+    // }
+
     if (nameExists) {
-      window.alert(`${newName} is already added to phonebook`)
-      setNewName('')
-      setNewNumber('')
-      return
+      const toReplace = persons.find(p => p.name === newName) //Find the person obj with matching name
+
+      if (window.confirm(`${newName} is already in the phonebook, replace the old number with a new one?`)) {
+        console.log("starting PUT promise")
+        //Axios req to update that person obj with new number
+
+        console.log("ID to replace ", toReplace.id )
+        console.log("NEW person OBJECT", personObject )
+
+        noteService
+          .update(toReplace.id, personObject)
+          .then(updatedNumber => {
+            console.log("RESPONSE", updatedNumber)
+            console.log("Person to be replaced", toReplace)
+            console.log("Current PERSONS", persons)
+            //setPersons(persons.concat(returnedNumber))
+
+            setPersons(persons.map(p=>
+              p.id === toReplace.id ? updatedNumber : p
+            ))
+
+            // setPersons(persons.map(updatedNumber.id === toReplace.id ? updatedNumber : persons))
+
+
+            // setPersons(prevPerson=>{
+            //   //Goes through persons array and if matches the id of the new number to be replaced
+            //   // Then it wil put the updatedNumber in place oterwise it will just be persons
+            //   //compare with name rather than id
+            //   updatedNumber.id === toReplace.id ? updatedNumber : persons;
+            // })
+            console.log("state of persons", persons)
+          })
+
+          .catch(error => {
+
+            console.log(error)
+
+            console.log(`There was an error changing Name '${toReplace.name}' `)
+          })
+      }
     }
 
     else {
-
       noteService
         .create(personObject)
         .then(returnedNumber => {
-          console.log("returned number",returnedNumber)
+          console.log("returned number", returnedNumber)
           setPersons(persons.concat(returnedNumber))
           console.log("post request complete")
           setNewName('')
@@ -120,33 +119,36 @@ const App = () => {
         })
 
     }
+    setNewName('')
+    setNewNumber('')
   }
 
   const removeNumber = id => {
 
     const nameToRemove = persons.find(p => p.id === id)
+    console.log('toremoveojb', nameToRemove)
     console.log(nameToRemove.name)
-  
+
     if (window.confirm(`Delete ${nameToRemove.name}?`)) {
       noteService
-      .remove(id)
-      .then(removedPerson => {
-        console.log("Number deleted ",removedPerson )
-        setPersons(persons.filter(person=>person.id !== id))
-      })
-      .catch(error=>{
-        console.log("Person cannot be found")
-      })
+        .remove(id)
+        .then(removedPerson => {
+          console.log("Number deleted ", removedPerson)
+          setPersons(persons.filter(person => person.id !== id))
+        })
+        .catch(error => {
+          console.log("Person cannot be found")
+        })
     }
   }
 
   const Persons = ({ persons, newSearch }) => {
     return (
-      
+
       persons.filter(person => person.name.toLowerCase()
         .includes(newSearch.toLowerCase()))
         .map(person =>
-          <Name key= {person.id} person ={person} removeNumber={removeNumber} />
+          <Name key={person.id} person={person} removeNumber={removeNumber} />
         )
     )
   }
@@ -164,12 +166,12 @@ const App = () => {
 
       <h3>Add a new </h3>
 
-      <PersonForm 
-      addNewPerson={addNewPerson} 
-      newName={newName} 
-      handlePersonChange={handlePersonChange}
-      newNumber={newNumber} 
-      handleNameChange={handleNameChange} 
+      <PersonForm
+        addNewPerson={addNewPerson}
+        newName={newName}
+        handlePersonChange={handlePersonChange}
+        newNumber={newNumber}
+        handleNameChange={handleNameChange}
       />
 
       <h2>Numbers</h2>
