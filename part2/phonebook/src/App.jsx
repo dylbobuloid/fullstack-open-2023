@@ -88,19 +88,18 @@ const App = () => {
             console.log("Current PERSONS", persons)
             //setPersons(persons.concat(returnedNumber))
 
+            //Success Message for CHANGING new number to Phonebook
+            setErrorMessage(
+              `Changed ${toReplace.name} `
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+
             setPersons(persons.map(p=>
               p.id === toReplace.id ? updatedNumber : p
             ))
 
-            // setPersons(persons.map(updatedNumber.id === toReplace.id ? updatedNumber : persons))
-
-
-            // setPersons(prevPerson=>{
-            //   //Goes through persons array and if matches the id of the new number to be replaced
-            //   // Then it wil put the updatedNumber in place oterwise it will just be persons
-            //   //compare with name rather than id
-            //   updatedNumber.id === toReplace.id ? updatedNumber : persons;
-            // })
             console.log("state of persons", persons)
           })
 
