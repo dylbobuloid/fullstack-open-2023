@@ -5,12 +5,24 @@ import noteService from './services/persons'
 import Name from './components/name'
 import PersonForm from './components/PersonForm';
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='success'>
+      {message}
+    </div>
+  )
+}
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     noteService
@@ -108,10 +120,21 @@ const App = () => {
           console.log("returned number", returnedNumber)
           setPersons(persons.concat(returnedNumber))
           console.log("post request complete")
+
+          //Success Message for adding new number to Phonebook
+          setErrorMessage(
+            `Added ${returnedNumber.name} `
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+
           setNewName('')
           setNewNumber('')
         })
 
+        //Somewhere here I need to change the error message to alert the user that a number has been added
+        // to the
         .catch(error => {
           alert(
             `the number '${person}' was doesn't exist`
@@ -158,13 +181,13 @@ const App = () => {
       {/* <div>debug name: {newName}</div>
       <div>debug number: {newNumber}</div>
       <div>debug search: {newSearch}</div> */}
-
-
-
+ 
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
+
       <Filter newSearch={newSearch} handleSearchChange={handleSearchChange} />
 
-      <h3>Add a new </h3>
+      <h3>Add a new number </h3>
 
       <PersonForm
         addNewPerson={addNewPerson}
