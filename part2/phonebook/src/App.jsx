@@ -5,17 +5,18 @@ import noteService from './services/persons'
 import Name from './components/name'
 import PersonForm from './components/PersonForm';
 
-const Notification = ({ message }) => {
-  if (message === null) {
+const Notification = ({ message, type }) => {
+  if (message == null) {
     return null
   }
 
   return (
-    <div className='success'>
+    <div className={type}>
       {message}
     </div>
   )
 }
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -23,6 +24,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
 
   useEffect(() => {
     noteService
@@ -77,8 +79,8 @@ const App = () => {
         console.log("starting PUT promise")
         //Axios req to update that person obj with new number
 
-        console.log("ID to replace ", toReplace.id )
-        console.log("NEW person OBJECT", personObject )
+        console.log("ID to replace ", toReplace.id)
+        console.log("NEW person OBJECT", personObject)
 
         noteService
           .update(toReplace.id, personObject)
@@ -89,14 +91,14 @@ const App = () => {
             //setPersons(persons.concat(returnedNumber))
 
             //Success Message for CHANGING new number to Phonebook
-            setErrorMessage(
+            setSuccessMessage(
               `Changed ${toReplace.name} `
             )
             setTimeout(() => {
-              setErrorMessage(null)
+              setSuccessMessage(null)
             }, 5000)
 
-            setPersons(persons.map(p=>
+            setPersons(persons.map(p =>
               p.id === toReplace.id ? updatedNumber : p
             ))
 
@@ -106,8 +108,14 @@ const App = () => {
           .catch(error => {
 
             console.log(error)
-
             console.log(`There was an error changing Name '${toReplace.name}' `)
+            setErrorMessage(
+              `Information of ${toReplace.name} has already been removed from the server `
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+
           })
       }
     }
@@ -121,11 +129,11 @@ const App = () => {
           console.log("post request complete")
 
           //Success Message for adding new number to Phonebook
-          setErrorMessage(
+          setSuccessMessage(
             `Added ${returnedNumber.name} `
           )
           setTimeout(() => {
-            setErrorMessage(null)
+            setSuccessMessage(null)
           }, 5000)
 
           setNewName('')
@@ -135,9 +143,12 @@ const App = () => {
         //Somewhere here I need to change the error message to alert the user that a number has been added
         // to the
         .catch(error => {
-          alert(
-            `the number '${person}' was doesn't exist`
+          setErrorMessage(
+            `The number '${person}' was doesn't exist`
           )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
 
     }
@@ -180,9 +191,14 @@ const App = () => {
       {/* <div>debug name: {newName}</div>
       <div>debug number: {newNumber}</div>
       <div>debug search: {newSearch}</div> */}
- 
+
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification
+        message={errorMessage}
+        type={"error"} />
+      <Notification
+        message={successMessage}
+        type={"success"} />
 
       <Filter newSearch={newSearch} handleSearchChange={handleSearchChange} />
 
