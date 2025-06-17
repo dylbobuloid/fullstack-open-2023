@@ -1,17 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from "axios";
+import Filter from './components/filter'
 
-const Filter = ({ newSearch, handleSearchChange }) => {
-
-  return (
-    <div>
-      find countries: <input value={newSearch}
-        onChange={handleSearchChange}>
-      </input>
-    </div>
-  )
-
-}
 
 const Country = ({ name }) => {
   return (
@@ -118,11 +108,7 @@ function App() {
       <div>
         <h1>Country Information</h1>
         <Filter newSearch={newSearch} handleSearchChange={handleSearchChange} />
-        {/* <ul>
-          {countries > 10 && 
-          <p>Too many matches, specify another filter</p>}
 
-        </ul> */}
         <Countries countries={countries} />
 
       </div>
