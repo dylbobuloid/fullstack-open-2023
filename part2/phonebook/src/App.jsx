@@ -179,10 +179,10 @@ const App = () => {
     return (
 
       persons.filter(person => person.name.toLowerCase()
-        .includes(newSearch.toLowerCase()))
-        .map(person =>
-          <Name key={person.id} person={person} removeNumber={removeNumber} />
-        )
+            .includes(newSearch.toLowerCase()))
+                    .map(person =>
+                              <Name key={person.id} person={person} removeNumber={removeNumber} />
+                                      )
     )
   }
 
