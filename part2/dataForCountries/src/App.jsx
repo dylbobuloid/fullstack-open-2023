@@ -10,6 +10,7 @@ function App() {
 
   const [countries, setCountries] = useState([]) //Countries we will be searchng
   const [newSearch, setNewSearch] = useState('') //Current search entry
+  const [selectedCountry, setSelectedCountry] = useState(null) //Current country to view
 
   useEffect(() => {
     console.log('fetching countries...')
@@ -22,12 +23,33 @@ function App() {
 
   //console.log("current countries", countries)
   console.log("current search", newSearch)
-
+  console.log("current selected Country", selectedCountry)
 
 
   const handleSearchChange = (event) => { setNewSearch(event.target.value) }
 
+  const Country = ({ country }) => {
+    console.log("this is the country", country)
 
+    if (selectedCountry && selectedCountry.name.common == country.name.common) {
+      return (
+        <MainCountry country={country} />
+      )
+
+    } else {
+      return (
+        <div key={country.cca3}>
+          {country.name.common}
+          <button onClick={() => setSelectedCountry(country)} >show</button>
+
+          <br />
+        </div>
+      )
+
+    }
+
+
+  }
 
   const Countries = ({ countries }) => {
 
@@ -49,8 +71,10 @@ function App() {
 
     }
     else if (countriesFiltered.length < 10) {
+
       return (
-        countriesFiltered.map(country => <Country key={country.cca3} name={country.name.common} />)
+        countriesFiltered.map(country =>
+          <Country key={country.cca3} country={country} />)
       )
 
     }

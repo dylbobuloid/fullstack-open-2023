@@ -1,11 +1,14 @@
 import React from "react";
 
-const Country = ({ name }) => {
+const Country = ({country}) => {
+  console.log("this is the country",country)
   return (
     <div>
-      {name} <br />
+      {country.name.common}
+      <button>show</button>      
+      <br />
     </div>
   )
 }
 
-  export default Country;
+export default Country;
