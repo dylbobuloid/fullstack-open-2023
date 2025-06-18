@@ -30,4 +30,4 @@ const MainCountry = ({ country }) => {
   )
 }
 
-  export default Country;
+  export default MainCountry;
