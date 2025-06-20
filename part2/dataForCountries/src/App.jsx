@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from "axios";
 import Filter from './components/filter'
-import Country from './components/country'
-import MainCountry from './components/mainCountry'
-
+import MainCountry from './components/mainCountry';
 
 
 function App() {
@@ -11,6 +9,7 @@ function App() {
   const [countries, setCountries] = useState([]) //Countries we will be searchng
   const [newSearch, setNewSearch] = useState('') //Current search entry
   const [selectedCountry, setSelectedCountry] = useState(null) //Current country to view
+  const [weather, setWeather] = useState(null)
 
   useEffect(() => {
     console.log('fetching countries...')
@@ -45,11 +44,10 @@ function App() {
           <br />
         </div>
       )
-
     }
-
-
   }
+
+
 
   const Countries = ({ countries }) => {
 
