@@ -1,7 +1,6 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
-
-app.use(express.json())
 
 let persons =
     [
@@ -26,6 +25,26 @@ let persons =
             "number": "39-23-6423122"
         }
     ]
+
+const requestLogger = (request, response, next) => {
+    console.log('Method:', request.method)
+    console.log('Path:  ', request.path)
+    console.log('Body:  ', request.body)
+    console.log('---')
+    next()
+}
+
+// const morgan = (tokens, req, res, next) => {
+//     console.log('method', tokens.method(req, res))
+//     console.log('url', tokens.url(req, res))
+//     console.log('status', tokens.status(req, res))
+//     console.log('res', tokens.res(req, res, 'content-length'), '-')
+//     console.log(tokens['response-time'](req, res), 'ms')
+//     console.log('---')
+// }
+
+app.use(express.json())
+app.use(morgan('combined'))
 
 app.get('/info', (request, response) => {
     const personsCount = persons.length
@@ -93,6 +112,12 @@ app.post('/api/persons', (request, response) => {
 app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
 
 
 const PORT = 3001
