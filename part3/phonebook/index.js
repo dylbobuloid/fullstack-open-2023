@@ -44,7 +44,7 @@ const requestLogger = (request, response, next) => {
 // }
 
 app.use(express.json())
-app.use(morgan('combined'))
+app.use(morgan('tiny'))
 
 app.get('/info', (request, response) => {
     const personsCount = persons.length
