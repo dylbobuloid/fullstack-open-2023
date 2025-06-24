@@ -2,6 +2,8 @@ const express = require('express')
 const morgan = require('morgan')
 const app = express()
 
+
+
 let persons =
     [
         {
@@ -26,25 +28,13 @@ let persons =
         }
     ]
 
-const requestLogger = (request, response, next) => {
-    console.log('Method:', request.method)
-    console.log('Path:  ', request.path)
-    console.log('Body:  ', request.body)
-    console.log('---')
-    next()
-}
+    
 
-// const morgan = (tokens, req, res, next) => {
-//     console.log('method', tokens.method(req, res))
-//     console.log('url', tokens.url(req, res))
-//     console.log('status', tokens.status(req, res))
-//     console.log('res', tokens.res(req, res, 'content-length'), '-')
-//     console.log(tokens['response-time'](req, res), 'ms')
-//     console.log('---')
-// }
 
 app.use(express.json())
+
 morgan.token('body', (req) => JSON.stringify(req.body))
+
 app.use(morgan(`:method :url :status :res[content-length] - :response-time ms :body`))
 
 app.get('/info', (request, response) => {
@@ -121,7 +111,7 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint)
 
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
