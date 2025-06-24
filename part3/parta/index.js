@@ -26,6 +26,10 @@ let notes = [
 ]
 
 
+app.get('/api/notes', (request, response) => {
+    response.json(notes)
+})
+
 app.get('/api/notes/:id', (request, response) => {
     const id = request.params.id
     const note = notes.find(note => note.id === id)
@@ -44,9 +48,6 @@ app.delete('/api/notes/:id', (request, response) => {
     response.status(204).end()
 })
 
-app.get('/api/notes', (request, response) => {
-    response.json(notes)
-})
 
 const generateId = () => {
   const maxId = notes.length > 0
