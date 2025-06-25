@@ -3,7 +3,6 @@ const morgan = require('morgan')
 const app = express()
 
 
-
 let persons =
     [
         {
@@ -28,10 +27,9 @@ let persons =
         }
     ]
 
-    
-
-
 app.use(express.json())
+app.use(express.static('dist'))
+
 
 morgan.token('body', (req) => JSON.stringify(req.body))
 
@@ -41,7 +39,7 @@ app.get('/info', (request, response) => {
     const personsCount = persons.length
 
     const time = new Date()
-
+    
     response.send(
         `<p>Phonebook has info for ${personsCount} people</p>
         <p>${time}</p>`
