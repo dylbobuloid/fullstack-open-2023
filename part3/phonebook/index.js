@@ -107,6 +107,14 @@ app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
 
+app.get('/', (req, res) => {
+  res.send(`
+    <h1>Welcome to the Phonebook API</h1>
+    <p>Use <code>/api/persons</code> to view all contacts.</p>
+    <p>Use <code>/info</code> for summary info.</p>
+  `)
+})
+
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
 }
