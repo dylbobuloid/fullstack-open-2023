@@ -1,5 +1,8 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
+
+
 const app = express()
 
 
@@ -27,6 +30,8 @@ let persons =
         }
     ]
 
+
+app.use(cors())    
 app.use(express.json())
 app.use(express.static('dist'))
 
@@ -39,7 +44,7 @@ app.get('/info', (request, response) => {
     const personsCount = persons.length
 
     const time = new Date()
-    
+
     response.send(
         `<p>Phonebook has info for ${personsCount} people</p>
         <p>${time}</p>`
