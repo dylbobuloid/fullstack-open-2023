@@ -32,8 +32,8 @@ app.get('/info', (request, response) => {
 
 
 app.delete('/api/persons/:id', (request, response) => {
-    
-    console.log("HEres the full request",request.params)
+
+    console.log("Heres the full request", request.params)
     Person.findByIdAndDelete(request.params.id)
         .then(deletedPerson => {
             if (deletedPerson) {
@@ -45,20 +45,24 @@ app.delete('/api/persons/:id', (request, response) => {
         })
         .catch(error => {
             console.error("Error deleting person:", error.message)
-            response.status(400).send({ error: "Something wrong with ID "})
+            response.status(400).send({ error: "Malformatted ID" })
         })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find(person => person.id === id)
-
-    if (person) {
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    Person.findById(request.params.id).then(person => {
+        if (person) {
+            response.json(person)
+        } else {
+            response.status(404).end()
+        }
+    })
+        .catch(error => {
+            console.log(error)
+            response.status(400).send({ error: "malformed id" })
+        })
 })
+
 
 
 app.post('/api/persons', (request, response) => {
