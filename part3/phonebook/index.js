@@ -1,12 +1,14 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 
 
 const app = express()
 
 
-let persons =
+/* let persons =
     [
         {
             "id": "1",
@@ -28,10 +30,10 @@ let persons =
             "name": "Mary Poppendieck",
             "number": "39-23-6423122"
         }
-    ]
+    ] */
 
 
-app.use(cors())    
+app.use(cors())
 app.use(express.json())
 app.use(express.static('dist'))
 
@@ -48,19 +50,28 @@ app.get('/info', (request, response) => {
     response.send(
         `<p>Phonebook has info for ${personsCount} people</p>
         <p>${time}</p>`
+
+
     )
 })
 
 
 app.delete('/api/persons/:id', (request, response) => {
-    console.log('Before delete:', persons)
-
-    const id = request.params.id
-    persons = persons.filter(person => person.id !== id)
-
-    console.log('After delete:', persons)
-
-    response.status(204).end()
+    
+    console.log("HEres the full request",request.params)
+    Person.findByIdAndDelete(request.params.id)
+        .then(deletedPerson => {
+            if (deletedPerson) {
+                console.log("Person deleted")
+                response.status(204).end()
+            } else {
+                response.json(404).send({ error: "Person not found" })
+            }
+        })
+        .catch(error => {
+            console.error("Error deleting person:", error.message)
+            response.status(400).send({ error: "Something wrong with ID "})
+        })
 })
 
 app.get('/api/persons/:id', (request, response) => {
@@ -76,14 +87,18 @@ app.get('/api/persons/:id', (request, response) => {
 
 
 app.post('/api/persons', (request, response) => {
+
     const body = request.body
 
     if (!body.name) {
         return response.status(400).json({
             error: 'name missing'
         })
+    }
 
-    } else if (persons.find(person => person.name === body.name)) {
+    const existingPeople = Person.find({ name: body.name })
+
+    if (existingPeople.length > 0) {
         console.log("matching person found")
         return response.status(400).json({
             error: 'name must be unique'
@@ -91,24 +106,34 @@ app.post('/api/persons', (request, response) => {
 
     }
 
-    const person = {
+    /*     (persons.find(person => person.name === body.name)) {
+            console.log("matching person found")
+            return response.status(400).json({
+                error: 'name must be unique'
+            })
+    
+        } */
+
+    const person = new Person({
         name: body.name,
         number: body.number,
-        id: Math.floor(Math.random() * 10000) + 1,
-    }
+    })
 
-    persons = persons.concat(person)
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
 
-    response.json(person)
 })
 
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(persons => {
+        response.json(persons)
+    })
 })
 
 app.get('/', (req, res) => {
-  res.send(`
+    res.send(`
     <h1>Welcome to the Phonebook API</h1>
     <p>Use <code>/api/persons</code> to view all contacts.</p>
     <p>Use <code>/info</code> for summary info.</p>
@@ -124,5 +149,5 @@ app.use(unknownEndpoint)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+    console.log(`Server running on port ${PORT}`)
 })
