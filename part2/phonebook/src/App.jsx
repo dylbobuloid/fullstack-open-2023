@@ -52,7 +52,6 @@ const App = () => {
     event.preventDefault()
 
     const personObject = {
-      id: String(persons.length + 1),
       name: newName,
       number: newNumber
     }
@@ -158,8 +157,10 @@ const App = () => {
 
   const removeNumber = id => {
 
+
     const nameToRemove = persons.find(p => p.id === id)
-    console.log('toremoveojb', nameToRemove)
+    console.log("THIS IS THE NAME TO REMOVE")
+    console.log('toremoveobj', nameToRemove)
     console.log(nameToRemove.name)
 
     if (window.confirm(`Delete ${nameToRemove.name}?`)) {

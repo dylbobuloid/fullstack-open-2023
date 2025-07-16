@@ -45,9 +45,6 @@ app.post('/api/notes', (request, response) => {
   })
 })
 
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
 
 
 app.get('/api/notes/:id', (request, response, next) => {
@@ -76,9 +73,6 @@ const generateId = () => {
     : 0
   return String(maxId + 1)
 }
-
-// handler of requests with unknown endpoint
-app.use(unknownEndpoint)
 
 app.get('/api/notes', (request, response) => {
   Note.find({}).then(notes => {
@@ -117,6 +111,13 @@ const errorHandler = (error, request, response, next) => {
 
 // this has to be the last loaded middleware, also all the routes should be registered before this!
 app.use(errorHandler)
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+// handler of requests with unknown endpoint
+app.use(unknownEndpoint)
+
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {

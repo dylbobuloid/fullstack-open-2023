@@ -1,5 +1,6 @@
 const Name = ({person, removeNumber}) => {
     
+    //console.log("person OBJ INSIDE NAME COMPONENT", person)
     return(
 
         <div className='numbers' key={person.id}>
