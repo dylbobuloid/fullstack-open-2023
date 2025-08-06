@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Filter from "./components/filter";
-import noteService from './services/persons'
+import personService from './services/persons'
 import Name from './components/name'
 import PersonForm from './components/PersonForm';
 
@@ -27,7 +27,7 @@ const App = () => {
   const [successMessage, setSuccessMessage] = useState(null)
 
   useEffect(() => {
-    noteService
+    personService
       .getAll()
       .then(initialNumbers => {
         setPersons(initialNumbers)
@@ -81,7 +81,7 @@ const App = () => {
         console.log("ID to replace ", toReplace.id)
         console.log("NEW person OBJECT", personObject)
 
-        noteService
+        personService
           .update(toReplace.id, personObject)
           .then(updatedNumber => {
             console.log("RESPONSE", updatedNumber)
@@ -120,7 +120,7 @@ const App = () => {
     }
 
     else {
-      noteService
+      personService
         .create(personObject)
         .then(returnedNumber => {
           console.log("returned number", returnedNumber)
@@ -138,12 +138,9 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
-
-        //Somewhere here I need to change the error message to alert the user that a number has been added
-        // to the
         .catch(error => {
           setErrorMessage(
-            `The number '${person}' was doesn't exist`
+            error.response.data.error
           )
           setTimeout(() => {
             setErrorMessage(null)
@@ -164,7 +161,7 @@ const App = () => {
     console.log(nameToRemove.name)
 
     if (window.confirm(`Delete ${nameToRemove.name}?`)) {
-      noteService
+      personService
         .remove(id)
         .then(removedPerson => {
           console.log("Number deleted ", removedPerson)
