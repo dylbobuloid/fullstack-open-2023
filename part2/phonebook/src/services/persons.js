@@ -4,10 +4,8 @@ import axios from 'axios'
 
 //const baseUrl = 'http://localhost:3001/persons'
 // Deployed locally
-//const baseUrl = 'http://localhost:3001/api/persons'
 
-// When deployed on render
-const baseUrl = process.env.REACT_APP_API_URL
+const baseUrl = 'http://localhost:3001/api/persons'
 
 
 const getAll = () => {
